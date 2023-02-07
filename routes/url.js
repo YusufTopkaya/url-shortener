@@ -12,9 +12,10 @@ const port=config.get("port")||5000;
 // Create short url
 router.post('/shorten', async(req,res)=>{
     console.log(req.body.longUrl)
-   const longUrl= req.body.longUrl
-   var urlCode=req.body.customcode
-   const baseUrl=config.get('baseUrl')
+    const domain = req.protocol + '://' + req.get('host');
+    const longUrl= req.body.longUrl
+    var urlCode=req.body.customcode
+    const baseUrl=config.get('baseUrl')
 
 //Check base url
 
@@ -36,7 +37,7 @@ urlCode=randomcode(6)
         if(url){
             res.status(409).json("Custom code already taken.");
         }else{
-            const shortUrl=baseUrl+port+'/'+urlCode
+            const shortUrl=domain+'/'+urlCode
             url=new Url({
                 longUrl,
                 shortUrl,
@@ -44,6 +45,7 @@ urlCode=randomcode(6)
                 date:new Date()
             })
             await url.save()
+            console.log(url)
             res.json(url)
         }
 
