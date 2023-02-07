@@ -5,7 +5,9 @@ const shortId=require('shortid')
 const config=require('config')
 const randomcode=require('../Utilities/randomcode')
 
-const Url=require('../models/Url')
+const Url=require('../models/url.js')
+
+const port=config.get("port")||5000;
 
 // Create short url
 router.post('/shorten', async(req,res)=>{
@@ -32,9 +34,9 @@ urlCode=randomcode(6)
     try {
         let url=await Url.findOne({urlCode})
         if(url){
-            res.json(url)
+            res.status(409).json("Custom code already taken.");
         }else{
-            const shortUrl=baseUrl+'/'+urlCode
+            const shortUrl=baseUrl+port+'/'+urlCode
             url=new Url({
                 longUrl,
                 shortUrl,
